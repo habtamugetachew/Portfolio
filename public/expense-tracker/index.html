@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Expense Tracker</title>
+  
+  <!-- Fonts: Inter & Noto Sans Ethiopic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <!-- Background Elements for Glassmorphism -->
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+  <div class="bg-shape shape-3"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header glass-panel">
+      <h1><i class="fa-solid fa-wallet"></i> <span data-i18n="app_title">ExpenseTracker</span></h1>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" title="Toggle Light/Dark Mode">
+          <i class="fa-regular fa-lightbulb"></i>
+        </button>
+        <select id="currency-selector" class="currency-selector">
+          <option value="$">USD ($)</option>
+          <option value="Br">ETB (Br)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="¥">JPY (¥)</option>
+        </select>
+        <select id="language-selector" class="currency-selector">
+          <option value="en">🇺🇸 EN</option>
+          <option value="am">🇪🇹 አማ</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Balance Card -->
+      <section class="card balance-card glass-panel">
+        <div class="balance-header">
+          <h3 data-i18n="total_balance">Total Balance</h3>
+          <div class="dropdown">
+            <i class="fa-solid fa-ellipsis-vertical dropdown-btn" id="balance-menu-btn"></i>
+            <div class="dropdown-content" id="balance-menu">
+              <button id="clear-all-btn"><i class="fa-solid fa-trash"></i> <span data-i18n="clear_all">Clear All Data</span></button>
+            </div>
+          </div>
+        </div>
+        <h2 id="balance" class="balance-amount">$0.00</h2>
+        
+        <div class="income-expense-row">
+          <div class="stat income">
+            <div class="icon-box"><i class="fa-solid fa-arrow-up"></i></div>
+            <div class="stat-details">
+              <p data-i18n="income">Income</p>
+              <h4 id="money-plus">+$0.00</h4>
+            </div>
+          </div>
+          <div class="stat expense">
+            <div class="icon-box"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="stat-details">
+              <p data-i18n="expense">Expense</p>
+              <h4 id="money-minus">-$0.00</h4>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart Card -->
+      <section class="card chart-card glass-panel">
+        <h3 data-i18n="spending_overview">Spending Overview</h3>
+        <div class="chart-container">
+          <canvas id="expenseChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Add Transaction Card -->
+      <section class="card add-transaction-card glass-panel">
+        <h3 data-i18n="add_transaction">Add Transaction</h3>
+        <form id="form">
+          <div class="form-control">
+            <label for="text" data-i18n="description">Description</label>
+            <input type="text" id="text" placeholder="e.g. Salary, Groceries..." required autocomplete="off" data-i18n-placeholder="placeholder_desc" />
+          </div>
+          <div class="form-control">
+            <label for="amount" data-i18n="amount">Amount</label>
+            <input type="number" id="amount" placeholder="Enter amount (just the number)..." required step="0.01" min="0.01" data-i18n-placeholder="placeholder_amount" />
+          </div>
+          <div class="form-control">
+            <label for="category" data-i18n="category">Category</label>
+            <div class="custom-select-wrapper">
+              <div class="custom-select" id="custom-category-select">
+                <div class="custom-select-trigger">
+                  <span id="custom-category-text" data-i18n="cat_income">Income (Salary/Other)</span>
+                  <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <div class="custom-options">
+                  <div class="custom-option selected" data-value="Income" data-i18n="cat_income">Income (Salary/Other)</div>
+                  <div class="custom-option" data-value="Food" data-i18n="cat_food">Food & Dining</div>
+                  <div class="custom-option" data-value="Transport" data-i18n="cat_transport">Transportation</div>
+                  <div class="custom-option" data-value="Shopping" data-i18n="cat_shopping">Shopping</div>
+                  <div class="custom-option" data-value="Entertainment" data-i18n="cat_entertainment">Entertainment</div>
+                  <div class="custom-option" data-value="Bills" data-i18n="cat_bills">Bills & Utilities</div>
+                  <div class="custom-option" data-value="Other" data-i18n="cat_other">Other Expense</div>
+                </div>
+              </div>
+              <input type="hidden" id="category" value="Income">
+            </div>
+          </div>
+          <button type="submit" class="btn"><span data-i18n="add_transaction_btn">Add Transaction</span> <i class="fa-solid fa-plus"></i></button>
+        </form>
+      </section>
+
+      <!-- History Card -->
+      <section class="card history-card glass-panel">
+        <div class="history-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+          <h3 data-i18n="recent_transactions" style="margin-bottom: 0;">Recent Transactions</h3>
+          <span id="filter-badge" class="filter-badge" style="display: none;"></span>
+        </div>
+        <ul id="list" class="list">
+          <!-- Transactions will be inserted here dynamically -->
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
