@@ -1,0 +1,71 @@
+/* Interactive Lamp Layout */
+.hero.is-off {
+  background: transparent !important;
+}
+
+.hero-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.lamp-section {
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+/* When Off: Lamp is centered */
+.hero.is-off .lamp-section {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* When On: Lamp moves to the left naturally */
+.hero.is-on .lamp-section {
+  position: relative;
+  left: 0;
+  top: 0;
+  transform: none;
+  flex: 1;
+}
+
+.hero-text-section {
+  flex: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease 0.5s;
+}
+
+.hero.is-on .hero-text-section {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+  .hero-layout {
+    flex-direction: column;
+  }
+
+  .hero.is-on .hero-layout {
+    padding-top: 50px;
+  }
+
+  .hero.is-on .lamp-section {
+    transform: scale(0.7);
+    margin-bottom: 20px;
+  }
+
+  .hero.is-off .lamp-section {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
